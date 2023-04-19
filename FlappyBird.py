@@ -65,7 +65,60 @@ class Passaro:
             #incremento de deslocamento para facilitar a jogabilidade
             deslocamento -= 2
 
-    # Restringir o angulo do passaro
+        self.y += 1
+
+        # Restringir o angulo do passaro
+        if deslocamento < 0 or self.y < (self.altura + 50):
+            if self.angulo < self.rotacaoMaxima:
+                self.angulo = self.rotacaoMaxima
+        else:
+            if self.angulo > -90:
+                self.angulo -= self.velocidadeRotacao
+
+    def desenhar(self,tela):
+        #definir qual imagem do passaro vai usar
+        self.contagemImagem += 1
+
+        if self.contagemImagem < self.tempoAnimacao:
+            self.imagem = self.imagens[0]
+
+        elif self.contagemImagem < self.tempoAnimacao*2:
+            self.imagem = self.imagens[1]
+
+        elif self.contagemImagem < self.tempoAnimacao*3:
+            self.imagem = self.imagens[2]
+
+        elif self.contagemImagem < self.tempoAnimacao*4:
+            self.imagem = self.imagens[1]
+
+        elif self.contagemImagem < self.tempoAnimacao*4 + 1:
+            self.imagem = self.imagens[0]
+            self.contagemImagem = 0
+
+
+
+        #Se o passaro estiver caindo o passaro não vai bater asa
+        if self.angulo <= -80:
+            self.imagem = self.imagens[1]
+            self.contagemImagem = self.tempoAnimacao*2
+
+
+
+        #Desenhar a imgem
+        imagemRotacionada = pygame.transform.rotate(self.imagem,self.angulo)
+        coordenadaCentro  = self.imagem.get_rect(topleft = (self.x,self.y)).center
+        retangulo  = imagemRotacionada.get_rect(center = coordenadaCentro)
+        tela.blit(imagemRotacionada,retangulo.topleft)
+
+
+
+
+
+
+
+
+
+
 
 
 class Cano:
