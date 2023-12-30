@@ -10,9 +10,7 @@ telaAltura = 800
 
 # Importando as imagens
 imageCano = pygame.transform.scale2x(pygame.image.load(os.path.join("Images", "pipe.png")))
-
 imagemChao = pygame.transform.scale2x(pygame.image.load(os.path.join("Images", "base.png")))
-
 imagemFundo = pygame.transform.scale2x(pygame.image.load(os.path.join("Images", "bg.png")))
 
 ##As imagems do passaroa para dar a impressão de estar voando será
@@ -110,9 +108,9 @@ class Passaro:
         retangulo  = imagemRotacionada.get_rect(center = coordenadaCentro)
         tela.blit(imagemRotacionada,retangulo.topleft)
 
-        def GetMask(self):
+    def GetMask(self):
 
-                 return pygame.mask.from_surface(self.imagem)
+             return pygame.mask.from_surface(self.imagem)
 
 class Cano:
 
@@ -146,24 +144,29 @@ class Cano:
 
     def colidir(self,passaro):
 
-        passaroMask = passaro.get_masks()
-        topoMask = pygame.mask.from_surface(self.canoTopo)
-        baseMask = pygame.mask.from_surface(self.canoBase)
+        pass
+        '''
+        passaroMask = passaro.GetMask()
+        #topoMask = pygame.mask.from_surface(self.canoTopo)
+        #baseMask = pygame.mask.from_surface(self.canoBase)
 
         distanciaTopo = (self.x - passaro.x, self.posTopo - round(passaro.y))
         distanciaBase = (self.x - passaro.x, self.posBase - round(passaro.y))
 
         #Este parâmetro é verdadeiro quando exite um ponto de colisão do cano com o Topo
-        topoPonto = passaroMask.overlap(baseMask,distanciaTopo)
+        #topoPonto = passaroMask.overlap(baseMask,distanciaTopo)
 
         # Este parâmetro é verdadeiro quando exite um ponto de colisão do cano com a Base
-        basePonto = passaroMask.overlap(baseMask,distanciaBase)
+        #basePonto = passaroMask.overlap(baseMask,distanciaBase)
 
 
         if basePonto or basePonto:
             return True
         else:
             return False
+
+        
+        '''
 
 class Chao:
 
@@ -233,63 +236,51 @@ def main(removerCanos=None):
 
     pontos = 0
 
-    relogio  = pygame.time.Clock()
+    relogio = pygame.time.Clock()
 
-    loop  = True
+    loop = True
+
     while loop:
 
         relogio.tick(30)
 
         for evento in pygame.event.get():
-
             #Se o botão de fechar for pressinado
             if evento.type == pygame.QUIT:
+                    loop  = False
                     pygame.quit()
-                    loop = False
+                    quit()
 
             #Se alguma tecla for pressionada
             if evento.type == pygame.KEYDOWN:
-
                 if evento.key == pygame.K_SPACE:
                     for passaro in passaros:
                         passaro.pular()
+
         for passaro in passaros:
             passaro.mover()
-
         #Chao.Mover()
-
         adicionarCano = False
 
         for cano in canos:
-
             for i, passaro in enumerate(passaros):
-
                 if Cano.colidir(i,passaro):
-
                     passaros.pop(i)
-
                 if not cano.passou and passaro.x > cano.x:
                         cano.passou = True
-
                         adicionarCano = True
-
             cano.mover()
-
             if cano.x + cano.canoTopo.get_width() < 0:
                 removerCanos.append(cano)
 
         if adicionarCano:
-
             pontos += 1
-
             canos.append(Cano(600))
 
         for cano in removerCanos:
             canos.remove(cano)
 
-
         for i, passaro in enumerate(passaros):
-
             if (passaro.y + passaro.imagem.get_height()) > chao.y or (passaro.y + passaro.imagem.get_height()) < 0 :
 
                 passaros.pop(i)
