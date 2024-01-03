@@ -44,14 +44,14 @@ class Bird:
         self.time = 0
         self.height = self.y
     def MoveBird(self):
-        self.time = +1
+        self.time += 1
         displaciment = 1.5*(self.time**2) + self.velocit*self.time
 
         if displaciment > 16:
-            displaciment = 16
+                  displaciment = 5
 
         elif displaciment < 0:
-            displaciment -= 2
+            displaciment -= 11
 
         self.y += displaciment
 
@@ -115,6 +115,7 @@ class Pipe:
         screen.blit(self.topPipe,(self.x, self.topPosition))
         screen.blit(self.basePipe, (self.x, self.basePosition))
 
+    #Verify this point, becouse the mask collision its work only for top pipes!
     def PipeColision(self, bird):
         birdMasck = bird.GetMasck()
         topMasck = pygame.mask.from_surface(self.topPipe)
@@ -123,7 +124,7 @@ class Pipe:
         topDistance  = (self.x - bird.x,self.topPosition - round(bird.y))
         baseDistance = (self.x - bird.x,self.topPosition - round(bird.y))
 
-        topPoint = birdMasck.overlap(baseMask, topDistance)
+        topPoint = birdMasck.overlap(topMasck, topDistance)
         basePoint = birdMasck.overlap(baseMask, baseDistance)
 
         if topPoint or basePoint:
@@ -155,7 +156,7 @@ class Floor:
         screen.blit(self.image, (self.x2, self.y))
 
 
-def DrawScree(screen, birdes, pipes, floor, score):
+def DrawScreen(screen, birdes, pipes, floor, score):
     screen.blit(backgoundImage,(0,0))
     for bird in birdes:
         bird.DrawBird(screen)
@@ -183,15 +184,20 @@ def main():
 
         for event in pygame.event.get():
 
+            #Exit from application
             if event.type == pygame.QUIT:
                 running = False
                 pygame.quit()
                 quit()
 
+            #KEYDOWN is an event  ocour whem a button is pressure
             if event.type == pygame.KEYDOWN:
+
                 if event.key == pygame.K_SPACE:
                     for bird in birdes:
                         bird.JumpBird()
+
+
 
         for bird in birdes:
             bird.MoveBird()
@@ -201,7 +207,6 @@ def main():
         removePipe = []
 
         for pipe in pipes:
-
             for i, bird in enumerate(birdes):
 
                 if pipe.PipeColision(bird):
@@ -224,7 +229,7 @@ def main():
             if (bird.y + bird.image.get_height()) > floor.y or bird.y < 0:
                 birdes.pop(i)
 
-        DrawScree(screen, birdes, pipes, floor, score)
+        DrawScreen(screen, birdes, pipes, floor, score)
 
 
 
